@@ -4,6 +4,9 @@
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+- Docker 20.10+
+- Docker Compose 2.0+
+- Node.js 22.14+ (для локальной разработки)
 
 ## Downloading
 
@@ -25,6 +28,20 @@ git checkout dev
 ```
 npm install
 ```
+
+## Start the application:
+
+```
+docker-compose up --build
+```
+
+## Apply database migrations:
+
+```
+docker-compose exec app npx prisma migrate dev --name init
+```
+
+Open in browser: http://localhost:4000
 
 ## Running application
 
