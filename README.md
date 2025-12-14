@@ -4,18 +4,58 @@
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
+- Node.js 22.14+ (для локальной разработки)
 
 ## Downloading
 
 ```
-git clone {repository URL}
+git clone https://github.com/ypaN73/nodejs2025Q2-service.git
+```
+```
+cd nodejs2025Q2-service
 ```
 
-## Installing NPM modules
+## Git change branch
+
+```
+git checkout dev-3
+```
+
+## 1. Installing NPM modules:
 
 ```
 npm install
 ```
+
+## 2. Set up the environment:
+
+```
+cp .env.example .env
+```
+
+## 3. Set up the database:
+
+Make sure PostgreSQL is running and accessible at the address specified in DATABASE_URL.
+
+Run the following commands to create the schema:
+
+```
+npx prisma db push --force-reset
+npx prisma generate
+```
+
+## 4. Launch the application:
+
+```
+# Development mode (with hot reload)
+npm run start:dev
+
+# Or build and run the production version:
+npm run build
+npm run start:prod
+```
+
+Open in browser: http://localhost:4000
 
 ## Running application
 
@@ -31,10 +71,10 @@ For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
 After application running open new terminal and enter:
 
-To run all tests without authorization
+To run all tests with authorization
 
 ```
-npm run test
+npm run test:auth
 ```
 
 To run only one of all test suites
