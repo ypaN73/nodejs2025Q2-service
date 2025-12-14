@@ -4,8 +4,6 @@
 
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
-- Docker 20.10+
-- Docker Compose 2.0+
 - Node.js 22.14+ (для локальной разработки)
 
 ## Downloading
@@ -20,25 +18,41 @@ cd nodejs2025Q2-service
 ## Git change branch
 
 ```
-git checkout dev
+git checkout dev-3
 ```
 
-## Installing NPM modules
+## 1. Installing NPM modules:
 
 ```
 npm install
 ```
 
-## Start the application:
+## 2. Set up the environment:
 
 ```
-docker-compose up --build
+cp .env.example .env
 ```
 
-## Apply database migrations:
+## 3. Set up the database:
+
+Make sure PostgreSQL is running and accessible at the address specified in DATABASE_URL.
+
+Run the following commands to create the schema:
 
 ```
-docker-compose exec app npx prisma migrate dev --name init
+npx prisma db push --force-reset
+npx prisma generate
+```
+
+## 4. Launch the application:
+
+```
+# Development mode (with hot reload)
+npm run start:dev
+
+# Or build and run the production version:
+npm run build
+npm run start:prod
 ```
 
 Open in browser: http://localhost:4000
@@ -57,10 +71,10 @@ For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
 After application running open new terminal and enter:
 
-To run all tests without authorization
+To run all tests with authorization
 
 ```
-npm run test
+npm run test:auth
 ```
 
 To run only one of all test suites
