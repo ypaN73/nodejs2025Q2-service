@@ -1,30 +1,29 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { CreateAlbumDto } from './dto/create-album.dto';
 import { UpdateAlbumDto } from './dto/update-album.dto';
-import { PrismaService } from '../prisma/prisma.service';
+import { StatusCodes } from 'http-status-codes';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class AlbumService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(createAlbumDto: CreateAlbumDto) {
     return this.prisma.album.create({
-      data: createAlbumDto,
+      data: { ...createAlbumDto },
     });
   }
 
   async findAll() {
-    return this.prisma.album.findMany();
+    return await this.prisma.album.findMany();
   }
 
   async findOne(id: string) {
     const album = await this.prisma.album.findUnique({
       where: { id },
     });
-
-    if (!album) {
-      throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
-    }
+    if (!album)
+      throw new HttpException("album doesn't exists", StatusCodes.NOT_FOUND);
 
     return album;
   }
@@ -33,14 +32,12 @@ export class AlbumService {
     const album = await this.prisma.album.findUnique({
       where: { id },
     });
+    if (!album)
+      throw new HttpException("album doesn't exists", StatusCodes.NOT_FOUND);
 
-    if (!album) {
-      throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
-    }
-
-    return this.prisma.album.update({
+    return await this.prisma.album.update({
       where: { id },
-      data: updateAlbumDto,
+      data: { ...updateAlbumDto },
     });
   }
 
@@ -48,10 +45,8 @@ export class AlbumService {
     const album = await this.prisma.album.findUnique({
       where: { id },
     });
-
-    if (!album) {
-      throw new HttpException('Album not found', HttpStatus.NOT_FOUND);
-    }
+    if (!album)
+      throw new HttpException("album doesn't exists", StatusCodes.NOT_FOUND);
 
     await this.prisma.$transaction([
       this.prisma.album.delete({

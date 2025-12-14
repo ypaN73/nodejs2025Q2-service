@@ -1,30 +1,29 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, Injectable } from '@nestjs/common';
 import { CreateArtistDto } from './dto/create-artist.dto';
 import { UpdateArtistDto } from './dto/update-artist.dto';
-import { PrismaService } from '../prisma/prisma.service';
+import { StatusCodes } from 'http-status-codes';
+import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ArtistService {
-  constructor(private prisma: PrismaService) { }
+  constructor(private prisma: PrismaService) {}
 
   async create(createArtistDto: CreateArtistDto) {
-    return this.prisma.artist.create({
-      data: createArtistDto,
+    return await this.prisma.artist.create({
+      data: { ...createArtistDto },
     });
   }
 
   async findAll() {
-    return this.prisma.artist.findMany();
+    return await this.prisma.artist.findMany();
   }
 
   async findOne(id: string) {
     const artist = await this.prisma.artist.findUnique({
       where: { id },
     });
-
-    if (!artist) {
-      throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
-    }
+    if (!artist)
+      throw new HttpException("artist doesn't exist", StatusCodes.NOT_FOUND);
 
     return artist;
   }
@@ -33,14 +32,12 @@ export class ArtistService {
     const artist = await this.prisma.artist.findUnique({
       where: { id },
     });
+    if (!artist)
+      throw new HttpException("artist doesn't exist", StatusCodes.NOT_FOUND);
 
-    if (!artist) {
-      throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
-    }
-
-    return this.prisma.artist.update({
+    return await this.prisma.artist.update({
       where: { id },
-      data: updateArtistDto,
+      data: { ...updateArtistDto },
     });
   }
 
@@ -48,10 +45,8 @@ export class ArtistService {
     const artist = await this.prisma.artist.findUnique({
       where: { id },
     });
-
-    if (!artist) {
-      throw new HttpException('Artist not found', HttpStatus.NOT_FOUND);
-    }
+    if (!artist)
+      throw new HttpException("artist doesn't exist", StatusCodes.NOT_FOUND);
 
     await this.prisma.$transaction([
       this.prisma.artist.delete({
